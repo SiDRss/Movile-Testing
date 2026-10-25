@@ -1,0 +1,47 @@
+plugins {
+    id 'java'
+    id 'eclipse'
+}
+
+group = 'com.test1'
+version = '1.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Cliente de Appium para Java
+    testImplementation 'io.appium:java-client:8.5.1'
+
+    // Dependencia explícita de Selenium Java
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.13.0'
+
+    // Framework JUnit 5
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Allure JUnit 5
+    testImplementation platform('io.qameta.allure:allure-bom:2.25.0')
+    testImplementation 'io.qameta.allure:allure-junit5'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+// Tarea para generar el reporte estático HTML de Allure
+tasks.register('allureReport', Exec) {
+    commandLine 'cmd', '/c', 'npx allure-commandline generate build/allure-results --clean -o build/reports/allure-report'
+}
+
+// Tarea para abrir el servidor y visualizar el reporte Allure en el navegador
+tasks.register('allureServe', Exec) {
+    commandLine 'cmd', '/c', 'npx allure-commandline serve build/allure-results'
+}
